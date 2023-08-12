@@ -59,4 +59,7 @@ export const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/gmail
 export const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
 
 
+export const BASED_URL='https://gmail.googleapis.com'
+
+export const ACCESS_TOKEN='ya29.a0AfB_byDHIDYaPwXZZ2bjMMXVbT5zf6qfTK6i1JsnnPBElT4TbubgSOoEkqG4nedt6nZxV-bPuT3JvC03sC97ttm9h_m3enrV966CLVgXnx81TGzQnOy7nIFOVr_27zOff33h8cEIHV0O3WMNLuHsXWchexn_aCgYKAZUSARMSFQHsvYlsda34npBBFBAxi3WMV8q1yw0163'
 
