@@ -1,3 +1,10 @@
+payload.parts.body.data
+
+
+
+
+
+
 Hi, I need a script/program developed for GMAIL. I have no idea if this idea is possible, so please advise accordingly. Basically, I want to be able to find duplicate emails from specific senders in gmail. I want to be able to search a senders name, and see all of the emails they sent me multiple times. Basic Function: I want to find duplicate emails by sender. So let’s say I get emails from "example1@gmail.com”. I want to be able to search "example1@gmail.com" and have it show me all of the emails that have the same body text in the email. The main purpose is to find emails with the same body text. Finding emails with the same subject line can be an additional feature. Filtering Options: Percentage Match I want to be able to filter results for duplicate emails based on percentage body text that matches. For example, I want to find emails that have 60% of the same body text, or 70% of the same body text, or 80% of the same etc. Number of Duplicates I also want to be able to filter results by number of duplicates. For example, I want to be able to only show duplicates that have been sent twice or more… or show duplicates that exist 3+ times, or 4+ times etc. Let me know if this sounds like something you can do.
 
 Once we have the final version developed as a google script and everything works as intended, do you think this is something that could be eventually developed into a chrome extension/website? Basically, you'd be able to connect the chrome extension to your gmail account, run the extension, and then have the results displayed on a website, instead of a google sheet. My goal right now is just to have this developed for personal use. But once it is working, and it does everything I need it to do, I would be interested in turning this into a product that can be shared with the public.
@@ -45,3 +52,7 @@ Also, the script needs to pull emails from ALL folders. (primary, promotions, an
 
 
 
+
+. Неужели мне для этого надо выдирать айдишнкики в какой-нибудь массив с одного запроса, а потом слать сотни/тысячи запросов к серверу? Это же не может быть правдой.
+
+Сожалею, но это правда. Потому что она указана в документации явным образом: "Note that each message resource contains only an id and a threadId. Additional message details can be fetched using the messages.get method." 

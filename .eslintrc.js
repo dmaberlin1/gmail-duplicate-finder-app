@@ -19,12 +19,17 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
   ],
-  rules: {},
+  rules: {
+    'react-refresh/only-export-components': 'off',
+    "react/prop-types": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars":"off",
+    "@typescript-eslint/no-explicit-any":"off",
+  },
   globals: {
     Edit: 'writable',
     console: 'writable',
