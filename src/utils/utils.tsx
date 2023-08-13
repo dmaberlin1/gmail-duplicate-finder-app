@@ -52,6 +52,8 @@ export const getMailById=async (mailID:string)=>{
     }
 }
 
+
+
 export function calculateSimilarityPercentage(str1, str2) {
     const distance = calculateLevenshteinDistance(str1, str2);
     const maxLength = Math.max(str1.length, str2.length);

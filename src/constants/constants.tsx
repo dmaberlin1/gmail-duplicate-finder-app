@@ -10,8 +10,7 @@ export const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
 
 export const BASED_URL='https://gmail.googleapis.com'
 
-export const ACCESS_TOKEN='ya29.a0AfB_byAPo4zse9KHnv-jG-KXf30osbd9iZAiK6J9P6P5UE3bUQ-ZL4Meejtz3LRHmP0QmMSO0IG9fi5OnkjrQrqQCTcIar_2UUZbm9RczAVSTB7AA8_XAiaOj2_z7kVmFuPDynzj3lxgjI6thdSuilB-aT6zJgaCgYKAZUSARMSFQHsvYlsMO9BFK0iCina49l6t88xVA0165'
-
+export const ACCESS_TOKEN='ya29.a0AfB_byBpedIkHyl_LljF2amy2e5ax9U03SVdXuoTcofM_6uWRpCwCfYy08mwwrARm3jSLUbEYmXlcWQ1OUchLVhoXLCwIUJk1K4UnD2y6LCQtPftkYq__i4jccmjvVwuecFewAThsLRu08GH3KN4o0Ql3AWLEQaCgYKAaMSARMSFQHsvYlsRA7kT39orwkSZTdJxEwKqw0165'
 
 export const validateEmail=(value:string)=>{
     if(!value) return 'Required';
