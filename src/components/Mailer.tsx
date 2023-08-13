@@ -11,7 +11,7 @@ import MailInfo from "@/components/MailInfo.tsx";
 
 const Mailer = () => {
     const [mailInfoComponents, setMailInfoComponents] = useState([]);
-    const [isLoading, setIsLoading] = useState(true); // Добавили состояние для загрузки
+    const [isLoading, setIsLoading] = useState(true);
     const idEmails = allMails?.map(mail => mail.id)
     const arrayWithId = []
 
