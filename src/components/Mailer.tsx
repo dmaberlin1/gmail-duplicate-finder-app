@@ -1,17 +1,17 @@
-import React from 'react';
-import MailerForm from "@/UI/MailerForm.tsx";
+import React, {useEffect, useState} from 'react';
 import {allMails, calculateSimilarityPercentage, decodingBody, getMailById, getMails} from "@/utils/utils.tsx";
-import {mailValue} from "@/constants/mailValue.tsx";
-import {log} from "util";
+import MailInfo from "@/components/MailInfo.tsx";
 
 
 const Mailer =  () => {
-
-    // console.log(allMails)
+    const [mailInfoComponents, setMailInfoComponents] = useState([]);
     const idEmails=allMails?.map(mail=>mail.id)
-    // console.log(idEmails)
-
     const arrayWithId=[]
+    useEffect(() => {
+        // Вызывается после формирования компонента и при изменении mailInfoComponents
+        // Меняем mailInfoComponents в состоянии
+        setMailInfoComponents(mailInfoComponents);
+    }, [mailInfoComponents]);
 
     const getAllMail=async(idArray:string[])=>{
         const results=[];
@@ -22,48 +22,59 @@ const Mailer =  () => {
         return results
     }
 
-  /* filter for Subject */
-    getAllMail(idEmails)
-        .then(results => {
-            const groupedByValue = results.reduce((groups, mail) => {
-                const value = mail.payload.headers[3].value;
-
-                if (!groups[value]) {
-                    groups[value] = [];
-                }
-                groups[value].push(mail);
-
-                return groups;
-            }, {});
-
-            const filteredGroups = Object.values(groupedByValue)
-                .filter(group => group.length > 1)
-
-            filteredGroups.forEach(group => {
-                for (let i = 0; i < group.length; i++) {
-                    const baseText = decodingBody(group[i].payload.parts[0].body.data);
-
-                    for (let j = i + 1; j < group.length; j++) {
-                        const textToCompare = decodingBody(group[j].payload.parts[0].body.data);
-                        const similarityPercentage = calculateSimilarityPercentage(baseText, textToCompare);
-                        console.log(`Похожесть текстов: ${similarityPercentage}%`);
-                    }
-                }
-            });
-
-            // console.log('1 elem');
-            // console.log(filteredGroups[0][0].payload.headers[3].value); //Subject
-            // console.log(filteredGroups[0][0].payload.headers[4].value); //From
-            // console.log(decodingBody(filteredGroups[0][0].payload.parts[0].body.data)); //body decoding
-            // console.log('2 elem');
-            // console.log(filteredGroups[1][0].payload.headers[3].value); //Subject
-            // console.log(filteredGroups[1][0].payload.headers[4].value); //From
-            // console.log(decodingBody(filteredGroups[1][0].payload.parts[0].body.data)); //body decoding
-
-        })
-        .catch(error => {
-            console.error(error);
-        });
+  /* filter for Subject with components and some left copy of components */
+    // getAllMail(idEmails)
+    //     .then(results => {
+    //         const groupedByValue = results.reduce((groups, mail) => {
+    //             const value = mail.payload.headers[3].value;
+    //
+    //             if (!groups[value]) {
+    //                 groups[value] = [];
+    //             }
+    //             groups[value].push(mail);
+    //
+    //             return groups;
+    //         }, {});
+    //
+    //         const filteredGroups = Object.values(groupedByValue)
+    //             .filter(group => group.length > 1)
+    //
+    //         filteredGroups.forEach(group => {
+    //             let resultOutput = false; // Флаг для проверки вывода результата
+    //              for (let i = 0; i < group.length && !resultOutput; i++) {
+    //                 const baseText = decodingBody(group[i].payload.parts[0].body.data);
+    //
+    //                 for (let j = i + 1; j < group.length && !resultOutput; j++) {
+    //                     const textToCompare = decodingBody(group[j].payload.parts[0].body.data);
+    //                     const similarityPercentage = calculateSimilarityPercentage(baseText, textToCompare);
+    //                     const subject=group[j].payload.headers[3].value
+    //                     const from=group[j].payload.headers[4].value
+    //                     console.log(`text is similar: ${similarityPercentage}%
+    //                      in Subject : ${group[j].payload.headers[3].value}
+    //                      From : ${group[j].payload.headers[4].value}
+    //                      `);
+    //
+    //                     const  mailInfoComponent=<MailInfo similar={similarityPercentage} subject={group[j].payload.headers[3].value} from={group[j].payload.headers[4].value}/>
+    //                     mailInfoComponents.push(mailInfoComponent)
+    //                     resultOutput = true; // Устанавливаем флаг, чтобы не выводить результат еще раз
+    //                 }
+    //             }
+    //         });
+    //         return mailInfoComponents
+    //
+    //         // console.log('1 elem');
+    //         // console.log(filteredGroups[0][0].payload.headers[3].value); //Subject
+    //         // console.log(filteredGroups[0][0].payload.headers[4].value); //From
+    //         // console.log(decodingBody(filteredGroups[0][0].payload.parts[0].body.data)); //body decoding
+    //         // console.log('2 elem');
+    //         // console.log(filteredGroups[1][0].payload.headers[3].value); //Subject
+    //         // console.log(filteredGroups[1][0].payload.headers[4].value); //From
+    //         // console.log(decodingBody(filteredGroups[1][0].payload.parts[0].body.data)); //body decoding
+    //
+    //     })
+    //     .catch(error => {
+    //         console.error(error);
+    //     });
 
 
 
@@ -152,12 +163,10 @@ const Mailer =  () => {
         <div className={'flex container flex-col'}>
            <h1>Contact Form</h1>
             {/*<MailerForm></MailerForm>*/}
-             <div className={'flex p-4 w-3/4 h-screen'}>
-               {/*<p className={''}>{decodingBody(mailValue)}</p>*/}
-                {/*<p>{allMails.map((mail) =>*/}
-               {/*    <li key={mail.id}>{mail.id}</li>)*/}
-                 {/*}</p>*/}
-            </div>
+
+           <div>
+               {mailInfoComponents.length>0 && mailInfoComponents}
+           </div>
         </div>
     );
 };
