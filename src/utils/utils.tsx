@@ -13,7 +13,7 @@ export const cn = (...inputs:ClassValue[]) => {
 export const  decodingBody=(data:string)=>{
   return Base64.atob(data)
 }
-export const mails=''
+
 export const getMails=async()=>{
   try{
     const res=await axios.get(
@@ -31,3 +31,26 @@ export const getMails=async()=>{
   }
 
 }
+
+export const allMails: string[] | Promise<undefined> |number= await getMails()
+
+export const getMailById=async (mailID:string)=>{
+    try {
+        const res= await axios.get(
+            `${BASED_URL}/gmail/v1/users/me/messages/${mailID}`,
+            {
+                headers:{
+                    Authorization:`Bearer ${ACCESS_TOKEN}`
+                }
+            }
+        )
+        const fullMail=res.data
+        return fullMail
+    }catch (err) {
+        console.log(err);
+    }
+}
+
+export const fullMail: string[] | Promise<undefined> |number= await getMailById(allMails[0].id)
+
+

@@ -3,7 +3,16 @@ import * as yup from 'yup'
 export const  API_KEY='AIzaSyCodgTgvKJFTVin5wBrEGsSoDoTtixH9r4';
 export const CLIENT_ID='954300090086-33qh6sg6tg1728lou4pn2vr0ppb815j5.apps.googleusercontent.com';
 export const CLIENT_SECRET='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'
-export const BASE_URL='https://gmail.googleapis.com/'
+export const AUTH_URL='https://accounts.google.com/o/oauth2/auth'
+export const ACCESS_TOKEN_URL='https://accounts.google.com/o/oauth2/token'
+export const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
+
+
+export const BASED_URL='https://gmail.googleapis.com'
+
+export const ACCESS_TOKEN='ya29.a0AfB_byA2JKZ2QZmBFnmjbB1gpTMpKyT3D0_HMsEOWdP3A6mU32H3zzncuhFy4KCkeYA_wry993T1A7OcEE3FUdt50b32qpO8ooZSFTl6GUegWrKf_wId3mGkubDA5d5WS49h_lJe7tRGYbRvSHDrOYz-COyXaCgYKAYUSARMSFQHsvYlsY_njdylmZPvhqD9kgY8y0A0163'
+
+
 export const validateEmail=(value:string)=>{
     if(!value) return 'Required';
     else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)){
@@ -24,10 +33,6 @@ export const validateAge=(age:any)=>{
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-
-interface TestContextExtended {
-    value?: unknown;
-}
 
 
 export const validationSchema=yup.object().shape({
@@ -56,10 +61,3 @@ export const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/gmail
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-export const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
-
-
-export const BASED_URL='https://gmail.googleapis.com'
-
-export const ACCESS_TOKEN='ya29.a0AfB_byDHIDYaPwXZZ2bjMMXVbT5zf6qfTK6i1JsnnPBElT4TbubgSOoEkqG4nedt6nZxV-bPuT3JvC03sC97ttm9h_m3enrV966CLVgXnx81TGzQnOy7nIFOVr_27zOff33h8cEIHV0O3WMNLuHsXWchexn_aCgYKAZUSARMSFQHsvYlsda34npBBFBAxi3WMV8q1yw0163'
-
