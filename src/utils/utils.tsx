@@ -51,6 +51,6 @@ export const getMailById=async (mailID:string)=>{
     }
 }
 
-export const fullMail: string[] | Promise<undefined> |number= await getMailById(allMails[0].id)
+// export const fullMail: string[] | Promise<undefined> |number= await getMailById(allMails[0].id)
 
 
