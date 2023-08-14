@@ -54,7 +54,7 @@ export const getMailById=async (mailID:string)=>{
 
 
 
-export function calculateSimilarityPercentage(str1, str2) {
+export function calculateSimilarityPercentage(str1:string, str2:string) {
     const distance = calculateLevenshteinDistance(str1, str2);
     const maxLength = Math.max(str1.length, str2.length);
     const similarityPercentage = ((maxLength - distance) / maxLength) * 100;
@@ -62,7 +62,7 @@ export function calculateSimilarityPercentage(str1, str2) {
     return similarityPercentage.toFixed(2);
 }
 
-export function calculateLevenshteinDistance(str1, str2) {
+export function calculateLevenshteinDistance(str1:string, str2:string) {
     const len1 = str1.length;
     const len2 = str2.length;
     const dp = Array.from({ length: len1 + 1 }, () => Array(len2 + 1).fill(0));
