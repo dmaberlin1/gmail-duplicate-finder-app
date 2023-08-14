@@ -9,6 +9,7 @@ import {
 import MailInfo from "@/components/MailInfo.tsx";
 import Button from "@/UI/Button.tsx";
 import {log} from "util";
+import {array} from "yup";
 
 
 const Mailer = () => {
@@ -19,10 +20,6 @@ const Mailer = () => {
 
     const idEmails = allMails?.map(mail => mail.id)
     const arrayWithId = []
-    // useEffect(() => {
-    //
-    //     setMailInfoComponents(mailInfoComponentsSubject);
-    // }, [mailInfoComponentsSubject]);
      const getAllMail=async(idArray:string[])=>{
         const results=[];
         for(const id of idArray){
@@ -33,6 +30,7 @@ const Mailer = () => {
     }
 
     const handleLoadDataBySubject = () => {
+
         setIsLoadingSubject(true);
         getAllMail(idEmails)
             .then(results => {
@@ -50,7 +48,7 @@ const Mailer = () => {
                 // console.log(groupedByValue)
                 const filteredGroups = Object.values(groupedByValue)
                     .filter(group => group.length >= 1) //fix from = to >=
-                const newMailInfoComponents = [];
+                const newMailInfoComponents:[] = [];
 
                 filteredGroups.forEach(group => {
                     let resultOutput = false;
@@ -98,45 +96,61 @@ const Mailer = () => {
 
 
     const handleLoadDataBySender = () => {
+
         setIsLoadingSender(true);
         getAllMail(idEmails)
             .then(results => {
                 const groupedByValue = results.reduce((groups, mail) => {
-                    const value = mail.payload.headers[4].value;
-                    if (!groups[value]) {
-                        groups[value] = [];
+                    if(mail.payload.headers[19] !==undefined) {
+
+                        const value = mail.payload.headers[16].value;
+                        if (!groups[value]) {
+                            groups[value] = [];
+                        }
+                        groups[value].push(mail);
+                        return groups;
                     }
-                    groups[value].push(mail);
-                    return groups;
                 }, {});
 
                 const filteredGroups = Object.values(groupedByValue)
                     .filter(group => group.length >= 1) //fix  from 1 to 0
 
                 const newMailInfoComponents = [];
+                console.log(filteredGroups[0])
+
+                const SubjectsUniqueValues = [...new Set(filteredGroups[0].map(item => item.payload.headers[19].value))];
+                const SubjectsUniqueValuesAsString=SubjectsUniqueValues.join(', ')
+                console.log(SubjectsUniqueValues);
+                console.log(SubjectsUniqueValuesAsString)
+
 
                 filteredGroups.forEach(group => {
                     let resultOutput = false;
                     for (let i = 0; i < group.length && !resultOutput; i++) {
                         const baseText = decodingBody(group[i].payload.parts[0].body.data);
+                        console.log(group[i].payload.headers[19].value +'<<<< from I loop')
+
+
 
                         for (let j = i + 1; j < group.length && !resultOutput; j++) {
                             const textToCompare = decodingBody(group[j].payload.parts[0].body.data);
                             const similarityPercentage = calculateSimilarityPercentage(baseText, textToCompare);
-                            const subject = group[j].payload.headers[3].value
-                            const from = group[j].payload.headers[4].value
+                            const subject = group[j].payload.headers[19].value
+                            const from = group[j].payload.headers[16].value
                             const key = group[j].id
 
                             console.log(`text is similar: ${similarityPercentage}%
-                             in Subject : ${group[j].payload.headers[3].value}
-                             From : ${group[j].payload.headers[4].value}
+                             in Subject : ${group[j].payload.headers[19].value}
+                             From : ${group[j].payload.headers[16].value}
                              `);
-                            console.log(group)
-                            console.log(group[j].payload.headers[4].value)
+
 
                             const mailInfoComponent = <MailInfo key={key} similar={similarityPercentage}
-                                                                subject={group[j].payload.headers[3].value}
-                                                                from={group[j].payload.headers[4].value}/>
+                                                                // subject={group[j].payload.headers[19].value}
+                                                                subject={SubjectsUniqueValuesAsString}
+                                                                from={group[j].payload.headers[16].value}
+                                                                count={group.length}
+                            />
 
                             newMailInfoComponents.push(mailInfoComponent)
                             resultOutput = true;
