@@ -72,6 +72,15 @@
 //             });
 //             return mailInfoComponents
 //
+
+
+                //console to out emails
+                // console.log(filteredGroups[0][0].payload.headers[19].value); //Subject
+//             // console.log(filteredGroups[0][0].payload.headers[16].value); //From
+//             // console.log(decodingBody(filteredGroups[0][0].payload.parts[0].body.data)); //body decoding
+
+
+               //console to self emails
 //             // console.log('1 elem');
 //             // console.log(filteredGroups[0][0].payload.headers[3].value); //Subject
 //             // console.log(filteredGroups[0][0].payload.headers[4].value); //From
