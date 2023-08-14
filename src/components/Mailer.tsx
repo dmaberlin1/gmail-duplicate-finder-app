@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import {
     allMails,
     calculateSimilarityPercentage,
@@ -7,11 +7,12 @@ import {
     getMails
 } from "@/utils/utils.tsx";
 import MailInfo from "@/components/MailInfo.tsx";
+import Button from "@/UI/Button.tsx";
 
 
 const Mailer = () => {
     const [mailInfoComponents, setMailInfoComponents] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const idEmails = allMails?.map(mail => mail.id)
     const arrayWithId = []
 
@@ -28,107 +29,118 @@ const Mailer = () => {
         return results
     }
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const results = await getAllMail(idEmails);
-    //
-    //             const mailComponents = [];
-    //
-    //             results.forEach(group => {
-    //                 for (let i = 0; i < group.length; i++) {
-    //                     const baseText = decodingBody(group[i].payload.parts[0].body.data);
-    //
-    //                     for (let j = i + 1; j < group.length; j++) {
-    //                         const textToCompare = decodingBody(group[j].payload.parts[0].body.data);
-    //                         const similarityPercentage = calculateSimilarityPercentage(baseText, textToCompare);
-    //                         const subject = group[j].payload.headers[3].value;
-    //                         const from = group[j].payload.headers[4].value;
-    //                         const key = group[j].id;
-    //
-    //                         console.log(`text is similar: ${similarityPercentage}%
-    //                                      in Subject : ${subject}
-    //                                      From : ${from}
-    //                                     `);
-    //
-    //                         const mailInfoComponent = (
-    //                             <MailInfo
-    //                                 key={key}
-    //                                 similar={similarityPercentage}
-    //                                 subject={subject}
-    //                                 from={from}
-    //                             />
-    //                         );
-    //                         newMailInfoComponents.push(mailInfoComponent);
-    //                     }
-    //                 }
-    //             });
-    //
-    //            setMailInfoComponents(newMailInfoComponents);
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     };
-    //
-    //     fetchData();
-    // }, [idEmails]);
-
-    getAllMail(idEmails)
-        .then(results => {
-            const groupedByValue = results.reduce((groups, mail) => {
-                const value = mail.payload.headers[3].value;
-
-                if (!groups[value]) {
-                    groups[value] = [];
-                }
-                groups[value].push(mail);
-
-                return groups;
-            }, {});
-
-            const filteredGroups = Object.values(groupedByValue)
-                .filter(group => group.length > 1)
-
-            filteredGroups.forEach(group => {
-                let resultOutput = false; // Флаг для проверки вывода результата
-                for (let i = 0; i < group.length && !resultOutput; i++) {
-                    const baseText = decodingBody(group[i].payload.parts[0].body.data);
-
-                    for (let j = i + 1; j < group.length && !resultOutput; j++) {
-                        const textToCompare = decodingBody(group[j].payload.parts[0].body.data);
-                        const similarityPercentage = calculateSimilarityPercentage(baseText, textToCompare);
-                        const subject = group[j].payload.headers[3].value
-                        const from = group[j].payload.headers[4].value
-                        const key = group[j].id
-                        console.log(`text is similar: ${similarityPercentage}%
-                         in Subject : ${group[j].payload.headers[3].value}
-                         From : ${group[j].payload.headers[4].value}
-                         `);
-
-                        const mailInfoComponent = <MailInfo key={key} similar={similarityPercentage}
-                                                            subject={group[j].payload.headers[3].value}
-                                                            from={group[j].payload.headers[4].value}/>
-
-                        mailInfoComponents.push(mailInfoComponent)
-                        resultOutput = true; // Устанавливаем флаг, чтобы не выводить результат еще раз
+    const handleLoadData = () => {
+        setIsLoading(true);
+        getAllMail(idEmails)
+            .then(results => {
+                const groupedByValue = results.reduce((groups, mail) => {
+                    const value = mail.payload.headers[3].value;
+                    if (!groups[value]) {
+                        groups[value] = [];
                     }
-                }
+                    groups[value].push(mail);
+                    return groups;
+                }, {});
+
+                const filteredGroups = Object.values(groupedByValue)
+                    .filter(group => group.length > 1)
+
+                const newMailInfoComponents = [];
+
+                filteredGroups.forEach(group => {
+                    let resultOutput = false;
+                    for (let i = 0; i < group.length && !resultOutput; i++) {
+                        const baseText = decodingBody(group[i].payload.parts[0].body.data);
+
+                        for (let j = i + 1; j < group.length && !resultOutput; j++) {
+                            const textToCompare = decodingBody(group[j].payload.parts[0].body.data);
+                            const similarityPercentage = calculateSimilarityPercentage(baseText, textToCompare);
+                            const subject = group[j].payload.headers[3].value
+                            const from = group[j].payload.headers[4].value
+                            const key = group[j].id
+
+                            console.log(`text is similar: ${similarityPercentage}%
+                             in Subject : ${group[j].payload.headers[3].value}
+                             From : ${group[j].payload.headers[4].value}
+                             `);
+
+                            const mailInfoComponent = <MailInfo key={key} similar={similarityPercentage}
+                                                                subject={group[j].payload.headers[3].value}
+                                                                from={group[j].payload.headers[4].value}/>
+
+                            newMailInfoComponents.push(mailInfoComponent)
+                            resultOutput = true;
+                        }
+                    }
+                });
+
+                setMailInfoComponents(newMailInfoComponents);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.error(error);
+                setIsLoading(false);
             });
-            return mailInfoComponents
+    };
 
-            console.log('1 elem');
-            console.log(filteredGroups[0][0].payload.headers[3].value); //Subject
-            console.log(filteredGroups[0][0].payload.headers[4].value); //From
-            console.log(decodingBody(filteredGroups[0][0].payload.parts[0].body.data)); //body decoding
-            console.log('2 elem');
-            console.log(filteredGroups[1][0].payload.headers[3].value); //Subject
-            console.log(filteredGroups[1][0].payload.headers[4].value); //From
-            console.log(decodingBody(filteredGroups[1][0].payload.parts[0].body.data)); //body decoding
 
-        })
-        .catch(error => {
-            console.error(error);
-        });
+
+    // getAllMail(idEmails)
+    //     .then(results => {
+    //         const groupedByValue = results.reduce((groups, mail) => {
+    //             const value = mail.payload.headers[3].value;
+    //
+    //             if (!groups[value]) {
+    //                 groups[value] = [];
+    //             }
+    //             groups[value].push(mail);
+    //
+    //             return groups;
+    //         }, {});
+    //
+    //         const filteredGroups = Object.values(groupedByValue)
+    //             .filter(group => group.length > 1)
+    //
+    //         filteredGroups.forEach(group => {
+    //             let resultOutput = false; // Флаг для проверки вывода результата
+    //             for (let i = 0; i < group.length && !resultOutput; i++) {
+    //                 const baseText = decodingBody(group[i].payload.parts[0].body.data);
+    //
+    //                 for (let j = i + 1; j < group.length && !resultOutput; j++) {
+    //                     const textToCompare = decodingBody(group[j].payload.parts[0].body.data);
+    //                     const similarityPercentage = calculateSimilarityPercentage(baseText, textToCompare);
+    //                     const subject = group[j].payload.headers[3].value
+    //                     const from = group[j].payload.headers[4].value
+    //                     const key = group[j].id
+    //                     console.log(`text is similar: ${similarityPercentage}%
+    //                      in Subject : ${group[j].payload.headers[3].value}
+    //                      From : ${group[j].payload.headers[4].value}
+    //                      `);
+    //
+    //                     const mailInfoComponent = <MailInfo key={key} similar={similarityPercentage}
+    //                                                         subject={group[j].payload.headers[3].value}
+    //                                                         from={group[j].payload.headers[4].value}/>
+    //
+    //                     mailInfoComponents.push(mailInfoComponent)
+    //                     resultOutput = true; // Устанавливаем флаг, чтобы не выводить результат еще раз
+    //                 }
+    //             }
+    //         });
+    //         return mailInfoComponents
+    //
+    //         // console.log('1 elem');
+    //         // console.log(filteredGroups[0][0].payload.headers[3].value); //Subject
+    //         // console.log(filteredGroups[0][0].payload.headers[4].value); //From
+    //         // console.log(decodingBody(filteredGroups[0][0].payload.parts[0].body.data)); //body decoding
+    //         // console.log('2 elem');
+    //         // console.log(filteredGroups[1][0].payload.headers[3].value); //Subject
+    //         // console.log(filteredGroups[1][0].payload.headers[4].value); //From
+    //         // console.log(decodingBody(filteredGroups[1][0].payload.parts[0].body.data)); //body decoding
+    //
+    //     })
+    //     .catch(error => {
+    //         console.error(error);
+    //     });
 
 
     /* filter for Subject with components and some left copy of components */
@@ -228,17 +240,20 @@ const Mailer = () => {
 
 
     return (
-        <div className={'flex container flex-col'}>
+        <div className={'flex container flex-col p-4'}>
             <h1>Contact Form</h1>
-            {/*<MailerForm></MailerForm>*/}
+            <Button onClick={handleLoadData} disabled={isLoading}>{isLoading ? 'Loading...':'Load Data'}</Button>
 
-            <div>
-                {isLoading ? (
-                    <p>Loading...</p>
-                ) : (
-                    mailInfoComponents.length > 0 && mailInfoComponents
-                )}
-            </div>
+            {  mailInfoComponents}
+            {/*<div>*/}
+            {/*    {isLoading ? (*/}
+            {/*        <p>Loading...</p>*/}
+            {/*    ) : (*/}
+            {/*         mailInfoComponents*/}
+            {/*    )}*/}
+            {/*</div>*/}
+
+
         </div>
     );
 };

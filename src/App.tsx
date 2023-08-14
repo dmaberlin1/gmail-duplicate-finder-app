@@ -1,13 +1,13 @@
 import Mailer from "@/components/Mailer.tsx";
+import Main from "@/components/Main.tsx";
 
 
 const App = () => {
 
   return (
     <div className="">
-      <h2>React,TS , Tailwind, Vite</h2>
 
-        <Mailer/>
+        <Main/>
 
     </div>
   );
